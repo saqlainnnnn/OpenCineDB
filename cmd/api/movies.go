@@ -3,6 +3,9 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"time"
+
+	"greelight.alexedwards.net/internal/data"
 )
 
 func (app *application) createMovieHandler(w http.ResponseWriter, r *http.Request) {
@@ -14,6 +17,21 @@ func (app*application) showMovieHandler(w http.ResponseWriter, r *http.Request) 
 
 	if err != nil {
 		http.NotFound(w, r)
+		return
 	}
-	fmt.Fprintf(w, "show the details of the movie %d\n", id)
+	//created instance of movie struct
+	movie := data.Movie {
+		ID: id,
+		CreatedAt: time.Now(),
+		Title: "Casablanca",
+		Runtime: 102,
+		Genres: []string{"drama", "romance", "war"},
+		Version: 1,
+	}
+	//this time encoding a struct
+	err = app.writeJson(w, http.StatusOK, movie, nil)
+	if err != nil {
+		app.logger.Println(err)
+		http.Error(w, "the server encountered a problem couldnt process your request", http.StatusInternalServerError)
+	}
 }
