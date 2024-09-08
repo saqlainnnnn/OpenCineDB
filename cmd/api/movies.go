@@ -29,7 +29,7 @@ func (app*application) showMovieHandler(w http.ResponseWriter, r *http.Request) 
 		Version: 1,
 	}
 	//this time encoding a struct
-	err = app.writeJson(w, http.StatusOK, movie, nil)
+	err = app.writeJson(w, http.StatusOK, envelope{"movie" : movie}, nil)
 	if err != nil {
 		app.logger.Println(err)
 		http.Error(w, "the server encountered a problem couldnt process your request", http.StatusInternalServerError)
