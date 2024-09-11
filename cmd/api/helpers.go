@@ -90,14 +90,18 @@ func (app *application) readJSON(w http.ResponseWriter, r *http.Request, dst int
 
 	case err.Error() == "http: request body too large" :
 		return fmt.Errorf("body must not be larger than %d bytes", maxBytes)
+	
+	case errors.As(err, &invalidUnmarshalError):
+		panic(err)
 
+	
 	default:
 		return err
 	}
 
 }
 	err = dec.Decode(&struct{}{})
-	if err != nil {
+	if err != io.EOF {
 		return errors.New("body must only contain a single JSON value")
 	} 
 	return nil
